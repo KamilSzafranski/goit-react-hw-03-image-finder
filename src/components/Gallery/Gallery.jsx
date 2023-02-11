@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
   GalleryBtn,
   GalleryGrid,
@@ -7,10 +7,9 @@ import {
 } from './Gallery.styled';
 import { Fragment } from 'react';
 
-export class Gallery extends Component {
+export class Gallery extends PureComponent {
   render() {
-    const { galleryHits } = this.props;
-    console.log(galleryHits);
+    const { galleryHits, handleClick } = this.props;
     return (
       <>
         <GalleryGrid>
@@ -22,7 +21,7 @@ export class Gallery extends Component {
             );
           })}
         </GalleryGrid>
-        <GalleryBtn>Load more</GalleryBtn>
+        <GalleryBtn onClick={handleClick}>Load more</GalleryBtn>
       </>
     );
   }
