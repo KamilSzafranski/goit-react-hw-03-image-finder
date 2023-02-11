@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-const GallerySection = styled.section;
-
 const GalleryGrid = styled.ul`
   display: grid;
   max-width: calc(100vw - 48px);
