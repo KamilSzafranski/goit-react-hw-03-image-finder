@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { fetchGallery } from 'services/api';
 import { Warning, SpinnerContainer } from './App.styled';
 import { Gallery } from './Gallery/Gallery';
@@ -34,12 +34,12 @@ export class App extends PureComponent {
   };
 
   handlePagination = async () => {
-    const { galleryData, inputValue, page } = this.state;
+    const { inputValue, page } = this.state;
     this.setState(prevState => ({ loader: true }));
     try {
       const galleryImages = await fetchGallery(inputValue, page);
       this.setState(prevState => ({
-        galleryData: [...galleryData, ...galleryImages],
+        galleryData: [...prevState.galleryData, ...galleryImages],
       }));
     } catch (error) {
     } finally {
@@ -68,7 +68,7 @@ export class App extends PureComponent {
   }
 
   render() {
-    const { galleryData, inputValue, loader } = this.state;
+    const { galleryData, loader } = this.state;
     return (
       <div>
         <Searchbar handleSubmit={this.handleSubmit} />
@@ -84,7 +84,7 @@ export class App extends PureComponent {
             handleClick={this.handleClick}
           />
         )}
-        {/* {loader && (
+        {loader && (
           <SpinnerContainer>
             <TailSpin
               height="380"
@@ -97,7 +97,7 @@ export class App extends PureComponent {
               visible={true}
             />
           </SpinnerContainer>
-        )} */}
+        )}
       </div>
     );
   }
