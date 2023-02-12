@@ -7,7 +7,6 @@ export const fetchGallery = async (searchParams, page = '1') => {
     if (!response.status) throw new Error(response.status);
 
     const galleryData = await response.json();
-    console.log(galleryData);
     return galleryData;
   } catch (error) {
     console.log(error);

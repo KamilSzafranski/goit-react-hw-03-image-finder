@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from "react";
 import {
   GalleryBtn,
   GalleryGrid,
@@ -8,19 +8,24 @@ import {
   SpinnerContainer,
   DotSpinnerContainer,
   Text,
-} from './Gallery.styled';
-import { Fragment } from 'react';
-import { fetchGallery } from 'services/api';
-import { TailSpin, ThreeDots } from 'react-loader-spinner';
+} from "./Gallery.styled";
+import { Fragment } from "react";
+import { fetchGallery } from "services/api";
+import { TailSpin, ThreeDots } from "react-loader-spinner";
+import { Modal } from "components/Modal/Modal";
+
+const defaultValue = [];
 
 export class Gallery extends PureComponent {
   state = {
     gallery: [],
     page: 1,
     loader: false,
-    loaderSmall: false,
     searchNothing: false,
     isPhotoLeft: true,
+    largeIMG: "",
+    imgAlt: "",
+    isModalOpen: false,
   };
 
   handleSearch = async () => {
@@ -28,6 +33,7 @@ export class Gallery extends PureComponent {
       loader: true,
       searchNothing: false,
       page: 1,
+      gallery: [],
     }));
 
     try {
@@ -35,39 +41,41 @@ export class Gallery extends PureComponent {
 
       if (galleryImages.hits.length === 0)
         this.setState(prevState => ({ searchNothing: true }));
+
+      this.setState(prevState => ({
+        gallery: galleryImages.hits,
+      }));
+
       if (galleryImages.totalHits <= 12) {
         this.setState(prevState => ({ isPhotoLeft: false }));
       } else {
         this.setState(prevState => ({ isPhotoLeft: true }));
       }
-      this.setState(prevState => ({
-        gallery: [...galleryImages.hits],
-      }));
     } catch (error) {
     } finally {
       this.setState(prevState => ({
         loader: false,
-        page: 1,
       }));
     }
   };
   handlePagination = async () => {
     const { page } = this.state;
     const { searchValue } = this.props;
-    this.setState(prevState => ({ loaderSmall: true }));
+    this.setState(prevState => ({ loader: true }));
     try {
       const galleryImages = await fetchGallery(searchValue, page);
-      console.log(page);
-      console.log(page * 12, galleryImages.totalHits);
 
       this.setState(prevState => ({
         gallery: [...prevState.gallery, ...galleryImages.hits],
       }));
+
+      if (page * 12 > galleryImages.totalHits)
+        return this.setState(prevState => ({ isPhotoLeft: false }));
     } catch (error) {
       console.log(error);
     } finally {
       this.setState(prevState => ({
-        loaderSmall: false,
+        loader: false,
       }));
     }
   };
@@ -77,7 +85,7 @@ export class Gallery extends PureComponent {
       await this.handleSearch();
     }
 
-    if (prevState.page !== this.state.page) {
+    if (prevState.page !== this.state.page && this.state.page !== 1) {
       await this.handlePagination();
     }
   }
@@ -87,11 +95,40 @@ export class Gallery extends PureComponent {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  handleModal = evt => {
+    evt.preventDefault();
+    const { alt, dataset } = evt.target;
+    this.setState(prevState => ({
+      largeIMG: dataset.largeimg,
+      imgAlt: alt,
+      isModalOpen: true,
+    }));
+  };
+
+  handleCloseModal = () => {
+    this.setState(prevState => ({ isModalOpen: false }));
+  };
+
   render() {
-    const { gallery, loader, loaderSmall, searchNothing, isPhotoLeft } =
-      this.state;
+    const {
+      gallery,
+      loader,
+      page,
+      searchNothing,
+      isPhotoLeft,
+      largeIMG,
+      imgAlt,
+      isModalOpen,
+    } = this.state;
     return (
       <>
+        {isModalOpen && (
+          <Modal
+            handleCloseModal={this.handleCloseModal}
+            largeurl={largeIMG}
+            imgalt={imgAlt}
+          />
+        )}
         {!loader && searchNothing && (
           <Warning>
             We found nothing &#x1F62D; Please try againg with corret search
@@ -102,13 +139,18 @@ export class Gallery extends PureComponent {
           {gallery.map(element => {
             return (
               <GalleryItem key={element.id}>
-                <GalleryImg alt={element.tags} src={element.webformatURL} />
+                <GalleryImg
+                  onClick={this.handleModal}
+                  alt={element.tags}
+                  src={element.webformatURL}
+                  data-largeimg={element.largeImageURL}
+                />
               </GalleryItem>
             );
           })}
         </GalleryGrid>
 
-        {loader && (
+        {loader && page === 1 && (
           <>
             <SpinnerContainer>
               <TailSpin
@@ -124,7 +166,7 @@ export class Gallery extends PureComponent {
             </SpinnerContainer>
           </>
         )}
-        {loaderSmall && (
+        {loader && page !== 1 && (
           <>
             <DotSpinnerContainer>
               <ThreeDots
@@ -144,7 +186,9 @@ export class Gallery extends PureComponent {
         {isPhotoLeft && gallery.length !== 0 && !loader && (
           <GalleryBtn onClick={this.handleClick}>Load more</GalleryBtn>
         )}
-        {!isPhotoLeft && !searchNothing && <Text>No more photo</Text>}
+        {!isPhotoLeft && !searchNothing && !loader && (
+          <Text>No more photo</Text>
+        )}
       </>
     );
   }
