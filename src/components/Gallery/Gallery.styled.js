@@ -62,4 +62,36 @@ const GalleryBtn = styled.button`
   }
 `;
 
-export { GalleryBtn, GalleryGrid, GalleryImg, GalleryItem };
+const Warning = styled.h2`
+  padding-top: 30vh;
+  text-align: center;
+`;
+
+const SpinnerContainer = styled.div`
+  padding-top: 15vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DotSpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Text = styled.h3`
+  text-align: center;
+  margin-bottom: 25px;
+`;
+
+export {
+  GalleryBtn,
+  GalleryGrid,
+  GalleryImg,
+  GalleryItem,
+  Warning,
+  SpinnerContainer,
+  DotSpinnerContainer,
+  Text,
+};
