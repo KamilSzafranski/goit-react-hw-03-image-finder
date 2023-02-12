@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { fetchGallery } from 'services/api';
 import { Gallery } from './Gallery/Gallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Warning } from './App.styled';

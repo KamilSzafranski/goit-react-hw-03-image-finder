@@ -24,7 +24,11 @@ export class Gallery extends PureComponent {
   };
 
   handleSearch = async () => {
-    this.setState(prevState => ({ loader: true, searchNothing: false }));
+    this.setState(prevState => ({
+      loader: true,
+      searchNothing: false,
+      page: 1,
+    }));
 
     try {
       const galleryImages = await fetchGallery(this.props.searchValue);
