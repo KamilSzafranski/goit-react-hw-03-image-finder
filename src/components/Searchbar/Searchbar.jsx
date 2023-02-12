@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 // import proptypes from 'prop-types';
 import {
   Searchbarr,
   SearchForm,
   SearchFormButton,
   SearchFormInput,
-} from './Searchbar.styled';
+} from "./Searchbar.styled";
+import PropTypes from "prop-types";
 
 export class Searchbar extends Component {
   render() {
@@ -20,3 +21,7 @@ export class Searchbar extends Component {
     );
   }
 }
+
+Searchbar.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+};

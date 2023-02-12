@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { Overlay, ModalDiv } from "./Modal.styled";
+import PropTypes from "prop-types";
 
 export class Modal extends PureComponent {
   closeOnKey = event => {
@@ -27,3 +28,9 @@ export class Modal extends PureComponent {
     );
   }
 }
+
+Modal.propTypes = {
+  handleCloseModal: PropTypes.func.isRequired,
+  imgalt: PropTypes.string,
+  largeurl: PropTypes.string.isRequired,
+};

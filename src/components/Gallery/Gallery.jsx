@@ -14,7 +14,7 @@ import { fetchGallery } from "services/api";
 import { TailSpin, ThreeDots } from "react-loader-spinner";
 import { Modal } from "components/Modal/Modal";
 
-const defaultValue = [];
+import PropTypes from "prop-types";
 
 export class Gallery extends PureComponent {
   state = {
@@ -193,3 +193,7 @@ export class Gallery extends PureComponent {
     );
   }
 }
+
+Gallery.propTypes = {
+  searchValue: PropTypes.string.isRequired,
+};
