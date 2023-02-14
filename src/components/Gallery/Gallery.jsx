@@ -23,9 +23,7 @@ export class Gallery extends PureComponent {
     loader: false,
     searchNothing: false,
     isPhotoLeft: true,
-    largeIMG: "",
-    imgAlt: "",
-    isModalOpen: false,
+    id: "",
   };
 
   handleSearch = async () => {
@@ -38,7 +36,7 @@ export class Gallery extends PureComponent {
 
     try {
       const galleryImages = await fetchGallery(this.props.searchValue);
-
+      console.log(galleryImages);
       if (galleryImages.hits.length === 0)
         this.setState(prevState => ({ searchNothing: true }));
 
@@ -97,36 +95,26 @@ export class Gallery extends PureComponent {
 
   handleModal = evt => {
     evt.preventDefault();
-    const { alt, dataset } = evt.target;
+    const { dataset } = evt.target;
     this.setState(prevState => ({
-      largeIMG: dataset.largeimg,
-      imgAlt: alt,
-      isModalOpen: true,
+      id: parseFloat(dataset.id),
     }));
   };
 
   handleCloseModal = () => {
-    this.setState(prevState => ({ isModalOpen: false }));
+    this.setState(prevState => ({ id: "" }));
   };
 
   render() {
-    const {
-      gallery,
-      loader,
-      page,
-      searchNothing,
-      isPhotoLeft,
-      largeIMG,
-      imgAlt,
-      isModalOpen,
-    } = this.state;
+    const { gallery, loader, page, searchNothing, isPhotoLeft, id } =
+      this.state;
+
     return (
       <>
-        {isModalOpen && (
+        {id && (
           <Modal
             handleCloseModal={this.handleCloseModal}
-            largeurl={largeIMG}
-            imgalt={imgAlt}
+            image={gallery.filter(element => element.id === id)}
           />
         )}
         {!loader && searchNothing && (
@@ -143,7 +131,7 @@ export class Gallery extends PureComponent {
                   onClick={this.handleModal}
                   alt={element.tags}
                   src={element.webformatURL}
-                  data-largeimg={element.largeImageURL}
+                  data-id={element.id}
                 />
               </GalleryItem>
             );
