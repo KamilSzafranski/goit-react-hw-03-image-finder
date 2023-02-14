@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import { Overlay, ModalDiv } from "./Modal.styled";
 import PropTypes from "prop-types";
-import { object } from "prop-types";
 
 export class Modal extends PureComponent {
   closeOnKey = event => {
